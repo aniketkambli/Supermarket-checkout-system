@@ -5,16 +5,26 @@ export class CheckoutService {
   private scannedItems: string[] = [];
 
   async initPricingRules() {
-    const rules = await PricingRule.find();
-    rules.forEach(rule => {
-      this.pricingRules.set(rule.sku, {
-        unitPrice: rule.unitPrice,
-        specialPrice: rule.specialPrice || undefined
+    try {
+      const rules = await PricingRule.find();
+      if (!rules || rules.length === 0) {
+        throw new Error('No pricing rules found');
+      }
+      rules.forEach(rule => {
+        this.pricingRules.set(rule.sku, {
+          unitPrice: rule.unitPrice,
+          specialPrice: rule.specialPrice || undefined
+        });
       });
-    });
+    } catch (error) {
+      throw new Error('Failed to initialize pricing rules');
+    }
   }
 
   scan(sku: string) {
+    if (!this.pricingRules.has(sku)) {
+      throw new Error(`Invalid SKU: ${sku}`);
+    }
     this.scannedItems.push(sku);
   }
 
@@ -28,9 +38,11 @@ export class CheckoutService {
 
     for (const [sku, count] of Object.entries(itemCounts)) {
       const rule = this.pricingRules.get(sku);
-      if (!rule) continue;
+      if (!rule) throw new Error(`Pricing rule not found for SKU: ${sku}`);
+      
       const { unitPrice, specialPrice } = rule;
-      if (specialPrice) {
+      
+      if (specialPrice && count >= specialPrice.quantity) {
         const fullSets = Math.floor(count / specialPrice.quantity);
         const remainder = count % specialPrice.quantity;
         total += fullSets * specialPrice.totalPrice + remainder * unitPrice;

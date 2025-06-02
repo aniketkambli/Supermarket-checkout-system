@@ -8,6 +8,10 @@ services:
       - mongo
     environment:
       - MONGO_URI=mongodb://mongo:27017/supermarket
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
   mongo:
     image: mongo
     ports:

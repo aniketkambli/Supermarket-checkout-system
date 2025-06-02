@@ -11,6 +11,9 @@ async function main() {
     checkout.scan('A');
     checkout.scan('B');
     checkout.scan('C');
+    checkout.scan('C');
+    checkout.scan('C');
+    checkout.scan('A');
     console.log(checkout.total());
   } catch (err) {
     console.error('Error:', err);
@@ -18,8 +21,5 @@ async function main() {
     await mongoose.disconnect();
   }
 }
-
-main();
-
 
 main();
