@@ -1,0 +1,26 @@
+{
+  "name": "supermarket-checkout",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "build": "tsc",
+    "test": "jest",
+    "seed": "ts-node src/scripts/seed.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "mongoose": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.0.0",
+    "@types/node": "^18.0.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "nodemon": "^3.1.10",
+    "prettier": "^2.8.0",
+    "ts-jest": "^29.0.0",
+    "ts-node": "^10.0.0",
+    "typescript": "^5.0.0"
+  }
+}
