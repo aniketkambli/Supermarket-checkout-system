@@ -6,7 +6,7 @@ jest.setTimeout(30000);
 
 beforeAll(async () => {
   try {
-    await mongoose.connect('mongodb://mongo:27017/supermarket_test');
+    await mongoose.connect(process.env.MONGO_TEST_URI || '');
     
     await PricingRule.deleteMany({}).exec();
     

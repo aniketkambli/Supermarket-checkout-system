@@ -10,10 +10,6 @@ async function main() {
     await checkout.initPricingRules();
     checkout.scan('A');
     checkout.scan('B');
-    checkout.scan('C');
-    checkout.scan('C');
-    checkout.scan('C');
-    checkout.scan('A');
     console.log(checkout.total());
   } catch (err) {
     console.error('Error:', err);
