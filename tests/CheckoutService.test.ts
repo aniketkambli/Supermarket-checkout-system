@@ -5,7 +5,7 @@ import { CheckoutService } from '../src/services/CheckoutService';
 jest.setTimeout(30000);
 
 beforeAll(async () => {
-  await mongoose.connect('mongodb://mongo:27017/supermarket_test');
+  await mongoose.connect(process.env.MONGO_TEST_URI || '');
   await PricingRule.deleteMany({});
   await PricingRule.insertMany([
     { sku: 'A', unitPrice: 50, specialPrice: { quantity: 3, totalPrice: 130 } },
