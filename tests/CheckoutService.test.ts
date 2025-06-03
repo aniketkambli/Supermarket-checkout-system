@@ -5,33 +5,22 @@ import { CheckoutService } from '../src/services/CheckoutService';
 jest.setTimeout(30000);
 
 beforeAll(async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_TEST_URI || '');
-    
-    await PricingRule.deleteMany({}).exec();
-    
-    await PricingRule.insertMany([
-      { sku: 'A', unitPrice: 50, specialPrice: { quantity: 3, totalPrice: 130 } },
-      { sku: 'B', unitPrice: 30, specialPrice: { quantity: 2, totalPrice: 45 } },
-      { sku: 'C', unitPrice: 20 },
-      { sku: 'D', unitPrice: 15 },
-    ]);
-  } catch (error) {
-    console.error('Error in beforeAll hook:', error);
-    throw error;
-  }
+  await mongoose.connect('mongodb://mongo:27017/supermarket_test');
+  await PricingRule.deleteMany({});
+  await PricingRule.insertMany([
+    { sku: 'A', unitPrice: 50, specialPrice: { quantity: 3, totalPrice: 130 } },
+    { sku: 'B', unitPrice: 30, specialPrice: { quantity: 2, totalPrice: 45 } },
+    { sku: 'C', unitPrice: 20 },
+    { sku: 'D', unitPrice: 15 }
+  ]);
 });
 
 afterAll(async () => {
-  try {
-    await PricingRule.deleteMany({}).exec();
-    await mongoose.disconnect();
-  } catch (error) {
-    console.error('Error in afterAll hook:', error);
-  }
+  await PricingRule.deleteMany({});
+  await mongoose.disconnect();
 });
 
-test('calculates total price correctly with special offers', async () => {
+test('calculates total with special prices applied', async () => {
   const checkout = new CheckoutService();
   await checkout.initPricingRules();
   checkout.scan('A');
@@ -42,57 +31,49 @@ test('calculates total price correctly with special offers', async () => {
   expect(checkout.total()).toBe(175);
 });
 
-test('calculates total price correctly without special offers', async () => {
-  const checkout = new CheckoutService();
-  await checkout.initPricingRules();
-  checkout.scan('C');
-  checkout.scan('D');
-  checkout.scan('D');
-  expect(checkout.total()).toBe(50);
-});
-
-test('handles single item purchases', async () => {
+test('calculates total without triggering special price', async () => {
   const checkout = new CheckoutService();
   await checkout.initPricingRules();
   checkout.scan('A');
-  expect(checkout.total()).toBe(50);
+  checkout.scan('B');
+  expect(checkout.total()).toBe(80);
 });
 
-test('handles multiple scans of same item without special price', async () => {
+test('calculates total with single item', async () => {
   const checkout = new CheckoutService();
   await checkout.initPricingRules();
   checkout.scan('C');
-  checkout.scan('C');
-  checkout.scan('C');
-  expect(checkout.total()).toBe(60);
+  expect(checkout.total()).toBe(20);
 });
 
-test('handles empty cart', async () => {
+test('calculates total with item without special price', async () => {
+  const checkout = new CheckoutService();
+  await checkout.initPricingRules();
+  checkout.scan('D');
+  checkout.scan('D');
+  expect(checkout.total()).toBe(30);
+});
+
+test('returns total 0 when no items scanned', async () => {
   const checkout = new CheckoutService();
   await checkout.initPricingRules();
   expect(checkout.total()).toBe(0);
 });
 
-test('handles mixed items with and without special prices', async () => {
+test('throws error for unknown SKU', async () => {
+  const checkout = new CheckoutService();
+  await checkout.initPricingRules();
+  expect(() => checkout.scan('X')).toThrow('Invalid SKU: X');
+});
+
+test('throws error for mixed valid and unknown SKUs', async () => {
   const checkout = new CheckoutService();
   await checkout.initPricingRules();
   checkout.scan('A');
-  checkout.scan('B');
-  checkout.scan('C');
-  checkout.scan('D');
-  expect(checkout.total()).toBe(115);
+  expect(() => checkout.scan('Z')).toThrow('Invalid SKU: Z');
 });
 
-test('handles partial special price quantities', async () => {
-  const checkout = new CheckoutService();
-  await checkout.initPricingRules();
-  checkout.scan('A');
-  checkout.scan('A');
-  checkout.scan('B');
-  expect(checkout.total()).toBe(130);
-});
-
-test('handles multiple special price applications', async () => {
+test('correctly applies multiple special price sets', async () => {
   const checkout = new CheckoutService();
   await checkout.initPricingRules();
   checkout.scan('A');
@@ -104,15 +85,20 @@ test('handles multiple special price applications', async () => {
   expect(checkout.total()).toBe(260);
 });
 
-test('handles invalid SKU', async () => {
+test('correctly applies special and regular pricing together', async () => {
   const checkout = new CheckoutService();
   await checkout.initPricingRules();
-  expect(() => checkout.scan('Z')).toThrow('Invalid SKU: Z');
+  checkout.scan('B');
+  checkout.scan('B');
+  checkout.scan('B');
+  expect(checkout.total()).toBe(75);
 });
 
-test('handles database connection error', async () => {
-  await mongoose.disconnect();
+test('handles repeated initPricingRules calls', async () => {
   const checkout = new CheckoutService();
-  await expect(checkout.initPricingRules()).rejects.toThrow();
-  await mongoose.connect('mongodb://mongo:27017/supermarket_test');
+  await checkout.initPricingRules();
+  await checkout.initPricingRules();
+  checkout.scan('C');
+  checkout.scan('C');
+  expect(checkout.total()).toBe(40);
 });

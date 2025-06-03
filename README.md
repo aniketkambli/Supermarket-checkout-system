@@ -23,5 +23,8 @@ db.pricingrules.updateOne(
 docker-compose exec app npx ts-node src/index.ts -- should give the updated result
 ```
 
+##Test Coverage
+![alt text](image.png)
+
 
 

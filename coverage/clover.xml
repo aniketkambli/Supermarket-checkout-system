@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1748932748227" clover="3.2.0">
+  <project timestamp="1748932748228" name="All files">
+    <metrics statements="33" coveredstatements="30" conditionals="13" coveredconditionals="11" methods="7" coveredmethods="6" elements="53" coveredelements="47" complexity="0" loc="33" ncloc="33" packages="2" files="2" classes="2"/>
+    <package name="models">
+      <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="PricingRule.ts" path="/app/src/models/PricingRule.ts">
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="services">
+      <metrics statements="29" coveredstatements="26" conditionals="13" coveredconditionals="11" methods="7" coveredmethods="6"/>
+      <file name="CheckoutService.ts" path="/app/src/services/CheckoutService.ts">
+        <metrics statements="29" coveredstatements="26" conditionals="13" coveredconditionals="11" methods="7" coveredmethods="6"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="10" type="stmt"/>
+        <line num="5" count="10" type="stmt"/>
+        <line num="8" count="11" type="stmt"/>
+        <line num="9" count="11" type="stmt"/>
+        <line num="10" count="11" type="cond" truecount="2" falsecount="1"/>
+        <line num="11" count="0" type="stmt"/>
+        <line num="13" count="11" type="stmt"/>
+        <line num="14" count="44" type="stmt"/>
+        <line num="20" count="0" type="stmt"/>
+        <line num="25" count="24" type="cond" truecount="1" falsecount="0"/>
+        <line num="26" count="2" type="stmt"/>
+        <line num="28" count="22" type="stmt"/>
+        <line num="32" count="8" type="stmt"/>
+        <line num="33" count="8" type="stmt"/>
+        <line num="34" count="21" type="cond" truecount="2" falsecount="0"/>
+        <line num="37" count="8" type="stmt"/>
+        <line num="39" count="8" type="stmt"/>
+        <line num="40" count="9" type="stmt"/>
+        <line num="41" count="9" type="cond" truecount="0" falsecount="1"/>
+        <line num="43" count="9" type="stmt"/>
+        <line num="45" count="9" type="cond" truecount="4" falsecount="0"/>
+        <line num="46" count="4" type="stmt"/>
+        <line num="47" count="4" type="stmt"/>
+        <line num="48" count="4" type="stmt"/>
+        <line num="50" count="5" type="stmt"/>
+        <line num="54" count="8" type="stmt"/>
+        <line num="58" count="0" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>
